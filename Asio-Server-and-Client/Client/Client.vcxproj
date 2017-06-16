@@ -564,6 +564,7 @@
     <ClInclude Include="..\AsioInclude\asio\write.hpp" />
     <ClInclude Include="..\AsioInclude\asio\write_at.hpp" />
     <ClInclude Include="..\AsioInclude\asio\yield.hpp" />
+    <ClInclude Include="Client.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\AsioInclude\asio\impl\src.cpp" />
