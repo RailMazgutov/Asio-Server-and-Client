@@ -25,4 +25,3 @@ std::string& Server::Message::getMessage()
 {
 	return mMessage;
 }
-
