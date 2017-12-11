@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AsioInclude", "AsioInclude", "{0DA561FF-5BEE-4F78-AAA7-CED1CCA1F1BB}"
 	ProjectSection(SolutionItems) = preProject
@@ -567,6 +567,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{749B9EB5-CCC2-4BE5-ABDE-49D7943D1094}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerExample", "ServerExample\ServerExample.vcxproj", "{B3841E3F-C050-461B-A165-867DBEDCAE0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -597,6 +599,16 @@ Global
 		{749B9EB5-CCC2-4BE5-ABDE-49D7943D1094}.Release|x64.Build.0 = Release|x64
 		{749B9EB5-CCC2-4BE5-ABDE-49D7943D1094}.Release|x86.ActiveCfg = Release|Win32
 		{749B9EB5-CCC2-4BE5-ABDE-49D7943D1094}.Release|x86.Build.0 = Release|Win32
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Debug|ARM.ActiveCfg = Debug|Win32
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Debug|x64.ActiveCfg = Debug|x64
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Debug|x64.Build.0 = Debug|x64
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Debug|x86.ActiveCfg = Debug|Win32
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Debug|x86.Build.0 = Debug|Win32
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|ARM.ActiveCfg = Release|Win32
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|x64.ActiveCfg = Release|x64
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|x64.Build.0 = Release|x64
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|x86.ActiveCfg = Release|Win32
+		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -623,5 +635,8 @@ Global
 		{875423D6-2928-43A0-AF91-7F266BFCEE9D} = {E5860D55-633C-4636-B67B-0A94F74A7413}
 		{1A001806-73EB-47E5-AE3E-89A8C07E00E4} = {876B5354-0417-41E0-9997-461E8507FC09}
 		{7DF9B999-5774-46C6-B4FA-4EDF85972C93} = {876B5354-0417-41E0-9997-461E8507FC09}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {57F3D0E1-DE80-463A-A981-90A83FAC0734}
 	EndGlobalSection
 EndGlobal

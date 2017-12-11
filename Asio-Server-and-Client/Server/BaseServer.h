@@ -3,39 +3,16 @@
 #include <string>
 #include <functional>
 
-class Message
+#ifdef SERVER_EXPORTS
+#define SERVER_API __declspec(dllexport) 
+#else
+#define SERVER_API __declspec(dllimport) 
+#endif
+
+struct Message
 {
-public:
-	Message() = default;
-
-	Message(const Message& message) = default;
-	Message& operator=(const Message& message) = default;
-
-	Message(Message&& message) = default;
-	Message& operator=(Message&& message) = default;
-
-	Message(size_t sender, const std::string& message): 
-		sender_(sender), 
-		message_(message) {}
-
-	Message(size_t sender, std::string&& message) :
-		sender_(sender),
-		message_(std::move(message)) {}
-
-	~Message() = default;
-
-	size_t sender() const
-	{
-		return sender_;
-	}
-
-	std::string& message()
-	{
-		return message_;
-	}
-private:
-	size_t sender_;
-	std::string message_;
+	size_t sender;
+	std::string message;
 };
 
 enum class ProtocolType
@@ -47,17 +24,22 @@ enum class ProtocolType
 class BaseServer
 {
 public:
-	BaseServer();
-	virtual ~BaseServer() = default;
+	static const std::string DEFAULT_LOCAL_IP;	// 127.0.0.1
+	static const unsigned int DEFAULT_PORT;		// 8080
 
-	virtual void registerMessageReceiveCallback(std::function<void(std::shared_ptr<Message> message)>) = 0;
-	virtual void registerMessageClientConnected(std::function<void(size_t client_id)>) = 0;
-	virtual void registerMessageClientDisconnected(std::function<void(size_t client_id)>) = 0;
+	SERVER_API virtual ~BaseServer() = default;
 
-	virtual void run() = 0;
-	virtual void stop() = 0;
+	//virtual void registerMessageReceivedCallback(std::function<void(std::shared_ptr<Message> message)>) = 0;
+	//virtual void registerClientConnectedCallback(std::function<void(size_t client_id)>) = 0;
+	//virtual void registerClientDisconnectedCallback(std::function<void(size_t client_id)>) = 0;
 
-	virtual void sendMessage(Message& message) = 0;
-	virtual void sendMessageToAll(Message& message) = 0;
-	virtual size_t connectionsCount() = 0;
+	SERVER_API virtual void run() = 0;
+	SERVER_API virtual void stop() = 0;
+
+	SERVER_API virtual void sendMessage(Message& message) = 0;
+	SERVER_API virtual void sendMessageToAll(std::string& message) = 0;
+	SERVER_API virtual size_t connectionsCount() = 0;
 };
+
+//template<typename MessageReceived, typename ClientConnected, typename ClientDisconnected>
+SERVER_API std::shared_ptr<BaseServer> getServer(ProtocolType type, int msgHandler, int connectionHandler, int diconnectionHandler);
