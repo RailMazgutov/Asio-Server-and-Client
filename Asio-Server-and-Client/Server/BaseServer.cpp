@@ -39,8 +39,6 @@ namespace
 			{
 
 			}
-
-			server_->clientDisconnected(id_);
 		}
 		void run()
 		{
@@ -57,8 +55,8 @@ namespace
 				else if ((asio::error::eof == ec) ||
 					(asio::error::connection_reset == ec))
 				{
-					server_->clientDisconnected(id_);
 					close();
+					server_->clientDisconnected(id_);					
 				}
 			});
 		}
