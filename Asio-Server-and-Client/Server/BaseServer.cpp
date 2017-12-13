@@ -20,7 +20,7 @@ namespace
 	using namespace asio;
 
 	template<typename Server, std::size_t bufferSize>
-	class Client : public std::enable_shared_from_this<Client<Server, bufferSize>>
+	class Client
 	{
 	public:
 		Client(int id, ip::tcp::socket socket, std::shared_ptr<Server> server) :
@@ -57,6 +57,7 @@ namespace
 				else if ((asio::error::eof == ec) ||
 					(asio::error::connection_reset == ec))
 				{
+					server_->clientDisconnected(id_);
 					close();
 				}
 			});
@@ -81,32 +82,36 @@ namespace
 		TcpServer(): address(ip::address::from_string("127.0.0.1")),
 		             endPoint(address, 8080),
 		             acceptor(service, endPoint),
-		             socket(service), lastClientId(0)
+		             socket(service), lastClientId(0), messages_lock(std::make_shared<std::recursive_mutex>()),
+					 clients_lock(std::make_shared<std::mutex>())
 		{
 		}
 
-		TcpServer(std::function<void(std::shared_ptr<Message>)> callback) : messageReceivedCallback(callback),
+		TcpServer(std::function<void(std::shared_ptr<Message>)> callback) : running(false),
+			messageReceivedCallback(callback),
 			address(ip::address::from_string("127.0.0.1")),
-			endPoint(address, 8080),
-			acceptor(service, endPoint), socket(service),
-			lastClientId(0)
-		{
+			endPoint(address, 8080), acceptor(service, endPoint),
+			socket(service), lastClientId(0), messages_lock(std::make_shared<std::recursive_mutex>()),
+			clients_lock(std::make_shared<std::mutex>())
+		{			
 		}
 
 		void run() override
 		{
 			if (!running) {
 				running = true;
-				std::unique_lock<std::mutex> section(messages_lock);
-				for (int i = 0; i < MAX_THREADS_COUNT; i++)
+				acceptClient();
 				{
-					messageHandlers.emplace_back(std::make_shared<std::thread>(
-						[&running = running, &messages = messages, &lock = messages_lock] (auto& callback) mutable
+					std::lock_guard<std::recursive_mutex> section(*messages_lock);
+					for (int i = 0; i < MAX_THREADS_COUNT; i++)
+					{
+						messageHandlers.emplace_back(std::make_shared<std::thread>(
+							[&running = running, &messages = messages, lock = messages_lock](auto& callback) mutable
 						{
 							while (running) {
 								std::shared_ptr<Message> message;
 								{
-									std::unique_lock<std::mutex> section(lock);
+									std::lock_guard<std::recursive_mutex> section(*lock);
 									if (!running)
 										break;
 									if (messages.size() > 0) {
@@ -116,16 +121,23 @@ namespace
 								}
 								if (message)
 								{
-									if(callback)
+									if (callback)
 									{
 										callback(message);
 									}
+									else
+									{
+										std::cout << "no callback" << std::endl;
+									}
 								}
+								std::this_thread::sleep_for(std::chrono::milliseconds(100));
 							}
 						}, messageReceivedCallback)
-					);
+						);
+					}
 				}
 				service.run();
+				
 			}
 		}
 		void stop() override
@@ -174,12 +186,14 @@ namespace
 			acceptor.async_accept(socket,
 				[this](std::error_code ec)
 			{
+				std::cout << "client" << std::endl;
 				if (!ec)
 				{
+					
 					auto client = std::make_shared<Client_t>(lastClientId, std::move(socket), shared_from_this());
 					client->run();
 					{
-						std::unique_lock<std::mutex> critical_section(clients_lock);
+						std::unique_lock<std::mutex> critical_section(*clients_lock);
 						clients.insert(std::make_pair(lastClientId, client));
 						lastClientId++;
 					}
@@ -194,7 +208,7 @@ namespace
 
 		void messageReceived(std::shared_ptr<Message> message)
 		{
-			std::unique_lock<std::mutex> lock(messages_lock);
+			std::lock_guard<std::recursive_mutex>lock(*messages_lock);
 			messages.push(message);
 		}
 
@@ -203,7 +217,7 @@ namespace
 			if (clientDisconnectedCallback)
 				clientDisconnectedCallback(id);
 
-			std::unique_lock<std::mutex> lock(clients_lock);
+			std::unique_lock<std::mutex> lock(*clients_lock);
 			if (clients.find(id) != clients.end())
 				clients.erase(id);			
 		}
@@ -224,8 +238,8 @@ namespace
 
 		size_t lastClientId;
 
-		std::mutex messages_lock;
-		std::mutex clients_lock;
+		std::shared_ptr<std::recursive_mutex> messages_lock;
+		std::shared_ptr<std::mutex> clients_lock;
 
 		std::queue<std::shared_ptr<Message>> messages;
 		std::vector<std::shared_ptr<std::thread>> messageHandlers;
