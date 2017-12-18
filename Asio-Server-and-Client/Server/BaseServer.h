@@ -25,6 +25,19 @@ enum class ProtocolType
 	TCP,
 	UDP
 };
+enum class BufferSize
+{
+	B128 = 128,
+	B256 = 256,
+	B512 = 512,
+	B1024 = 1024,
+	KB128 = 1024 * 128,
+	KB256 = 1024 * 256,
+	KB512 = 1024 * 512,
+	KB1024 = 1024 * 1024,
+	MB10 = 1024 * 1024 * 10,
+	MB100 = 1024 * 1024 * 100
+};
 
 SERVER_API class BaseServer
 {
@@ -48,4 +61,8 @@ public:
 };
 
 //template<typename MessageReceived, typename ClientConnected, typename ClientDisconnected>
-SERVER_API std::shared_ptr<BaseServer> getServer(ProtocolType type, std::function<void(std::shared_ptr<Message>)> callback);
+SERVER_API std::shared_ptr<BaseServer> getServer(std::string ip, unsigned port, ProtocolType type = ProtocolType::TCP, BufferSize size = BufferSize::B1024, 
+	bool useBlob = false,
+	std::function<void(std::shared_ptr<Message>)> messageReceivedCallback = {},
+	std::function<void(std::size_t)> clientConnectedCallback = {},
+	std::function<void(std::size_t)> clientDisconnectedCallback = {});
