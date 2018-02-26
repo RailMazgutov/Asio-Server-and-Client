@@ -12,7 +12,7 @@
 #include <asio/io_service.hpp>
 #include <asio/ip/address.hpp>
 #include <asio/ip/tcp.hpp>
-
+#include <asio/impl/src.hpp>
 const std::string BaseServer::DEFAULT_LOCAL_IP	= "127.0.0.1";
 
 
@@ -294,6 +294,10 @@ namespace
 		}
 		void sendMessageToAll(std::string& message) override
 		{
+			for (auto client : clients)
+			{
+				client.second->sendMessgae(message);
+			}
 		}
 		size_t connectionsCount() override
 		{
@@ -323,6 +327,7 @@ namespace
 						std::unique_lock<std::mutex> critical_section(*clients_lock);
 						clients.insert(std::make_pair(lastClientId, client));
 						lastClientId++;
+						std::cout << "connected" << std::endl;
 					}
 					if(clientConnectedCallback)
 					{

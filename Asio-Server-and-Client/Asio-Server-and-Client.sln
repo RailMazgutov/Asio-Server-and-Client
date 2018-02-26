@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AsioInclude", "AsioInclude", "{0DA561FF-5BEE-4F78-AAA7-CED1CCA1F1BB}"
 	ProjectSection(SolutionItems) = preProject
@@ -569,6 +569,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerExample", "ServerExample\ServerExample.vcxproj", "{B3841E3F-C050-461B-A165-867DBEDCAE0A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClientExample", "ClientExample\ClientExample.vcxproj", "{91A0D251-3C10-4DD4-9C89-C78707706928}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -609,6 +611,16 @@ Global
 		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|x64.Build.0 = Release|x64
 		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|x86.ActiveCfg = Release|Win32
 		{B3841E3F-C050-461B-A165-867DBEDCAE0A}.Release|x86.Build.0 = Release|Win32
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Debug|ARM.ActiveCfg = Debug|Win32
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Debug|x64.ActiveCfg = Debug|x64
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Debug|x64.Build.0 = Debug|x64
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Debug|x86.ActiveCfg = Debug|Win32
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Debug|x86.Build.0 = Debug|Win32
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Release|ARM.ActiveCfg = Release|Win32
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Release|x64.ActiveCfg = Release|x64
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Release|x64.Build.0 = Release|x64
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Release|x86.ActiveCfg = Release|Win32
+		{91A0D251-3C10-4DD4-9C89-C78707706928}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

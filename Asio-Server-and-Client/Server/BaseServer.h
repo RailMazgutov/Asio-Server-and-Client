@@ -48,10 +48,6 @@ public:
 
 	SERVER_API virtual ~BaseServer() = default;
 
-	//virtual void registerMessageReceivedCallback(std::function<void(std::shared_ptr<Message> message)>) = 0;
-	//virtual void registerClientConnectedCallback(std::function<void(size_t client_id)>) = 0;
-	//virtual void registerClientDisconnectedCallback(std::function<void(size_t client_id)>) = 0;
-
 	SERVER_API virtual void run() = 0;
 	SERVER_API virtual void stop() = 0;
 
