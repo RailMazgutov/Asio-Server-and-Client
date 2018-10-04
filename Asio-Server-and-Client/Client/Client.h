@@ -40,5 +40,5 @@ public:
 	CLIENT_API virtual ~Client() = default;
 };
 
-CLIENT_API std::shared_ptr<Client> getClient(std::string ip, unsigned port, ProtocolType type = ProtocolType::TCP, BufferSize size = BufferSize::B1024,
+CLIENT_API std::shared_ptr<Client> getClient(std::string ip, unsigned port, ProtocolType type = ProtocolType::TCP, const BufferSize size = BufferSize::B1024,
 	bool useBlob = false);

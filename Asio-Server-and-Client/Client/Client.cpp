@@ -29,8 +29,8 @@ public:
 		socket_.connect(endPoint_, error);
 		if(!error)
 		{
-			service_.run();
 			connected_ = true;
+			service_.run();			
 		}
 	}
 
@@ -65,7 +65,7 @@ public:
 	}
 	std::string read() override
 	{
-		char buff[BufferSize];
+		
 		asio::error_code err_code;
 		size_t bytes_received = socket_.read_some(asio::buffer(buff), err_code);
 		if ((asio::error::eof == err_code) || (asio::error::connection_reset == err_code))
@@ -81,6 +81,7 @@ public:
 	~TcpClient() override = default;
 	
 private:
+	char buff[BufferSize];
 	bool connected_ { false };
 	asio::io_service service_;
 	unsigned int port_;
@@ -89,7 +90,66 @@ private:
 	asio::ip::tcp::endpoint endPoint_;
 };
 
-CLIENT_API std::shared_ptr<Client> getClient(std::string ip, unsigned port, ProtocolType type, BufferSize size, bool useBlob)
+template <std::size_t BufferSize>
+class BlobTcpClient : public TcpClient<BufferSize>
 {
-	return std::make_shared<TcpClient<1024>>(ip, port);
+public:
+	BlobTcpClient(const std::string& address, unsigned int port): TcpClient<BufferSize>(address, port)
+	{
+	}
+	size_t send(const std::string& data) override
+	{
+		if (TcpClient<BufferSize>::isConnected()) {
+			int sizeNumber = data.size();
+			std::string sizeBytes(reinterpret_cast<char*>(&sizeNumber), sizeof sizeNumber);
+			TcpClient<BufferSize>::send(sizeBytes);
+			return TcpClient<BufferSize>::send(data);
+		}
+		return 0;
+	}
+	std::string read() override
+	{
+		int blobSize = 0;
+		if (buffer.size() > sizeof(int))
+		{
+			blobSize = *reinterpret_cast<int*>(&buffer[0]);
+			buffer = buffer.substr(sizeof blobSize);
+		}
+		else
+		{
+			while (buffer.size() < sizeof blobSize)
+			{
+				auto msg = TcpClient<BufferSize>::read();
+				if (msg.empty())
+					return "";
+
+				buffer += msg;
+			}
+			blobSize = *reinterpret_cast<int*>(&buffer[0]);
+			buffer = buffer.substr(sizeof blobSize);
+		}
+		while (buffer.size() < blobSize)
+		{
+			auto msg = TcpClient<BufferSize>::read();
+			if (msg.empty())
+				return "";
+
+			buffer += msg;
+		}
+		auto msg = buffer.substr(0, blobSize);
+		buffer = buffer.substr(blobSize);
+		return msg;
+	}
+
+private:
+	std::string buffer;
+};
+
+CLIENT_API std::shared_ptr<Client> getClient(std::string ip, unsigned port, ProtocolType type, const BufferSize size, bool useBlob)
+{
+	//const auto s = static_cast<std::size_t>(size);
+	if (useBlob)
+		return std::make_shared<BlobTcpClient<1024*1024>>(ip, port);
+
+	return std::make_shared<TcpClient<1024 * 1024>>(ip, port);
 }
