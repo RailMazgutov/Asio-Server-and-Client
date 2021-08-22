@@ -12,12 +12,6 @@ private:
         return (n <= 1) ? p : Log2(n / 2, p + 1);
     }
 
-    /*
-    static constexpr unsigned Log2(unsigned n) {
-        return (n < 2) ? 1 : 1 + Log2(n / 2);
-    }
-    */
-
     static constexpr uint64_t closestExponentOf2(uint64_t x) {
         return (1UL << ((uint64_t) (Log2(SIZE - 1)) + 1));
     }
